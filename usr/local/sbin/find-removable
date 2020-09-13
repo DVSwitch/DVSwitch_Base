@@ -1,0 +1,41 @@
+#!/bin/bash
+# set -o errexit
+
+######################################################
+SCRIPT_VERSION="Find Removable drive script v.1.0.4" #
+SCRIPT_AUTHOR="N4IRS"                                #
+SCRIPT_DATE="09/11/2020"                             #
+######################################################
+
+if [ "$1" != "" ]; then
+    case $1 in
+        -v|-V|--version) echo $SCRIPT_VERSION; exit 0 ;;
+        -a|-A|--author)  echo $SCRIPT_AUTHOR;  exit 0 ;;
+        -d|-D|--date)    echo $SCRIPT_DATE;    exit 0 ;;
+                   *)    echo "Unknown parameter used: $1"; exit 1 ;;
+    esac
+fi
+
+echo
+echo $SCRIPT_VERSION $SCRIPT_DATE
+echo
+
+for DRIVE in `ls /sys/block/`; do
+    REMOVABLE=`cat /sys/block/$DRIVE/removable`
+        if [ $REMOVABLE == "1" ]; then
+	    partprobe -d -s /dev/$DRIVE > /dev/null 2>&1
+ 	    # Check return code
+	    PARTPROBE_EXIT_CODE=$?
+ 		if [ $PARTPROBE_EXIT_CODE -eq 0 ]; then
+			ID_SERIAL=`/bin/udevadm info --name=/dev/$DRIVE | grep ID_SERIAL=|awk -F"=" ' { print $2}'|awk -F"-" ' { print $1}'`
+			ID_MODEL=`/bin/udevadm info --name=/dev/$DRIVE | grep ID_MODEL=|awk -F"=" ' { print $2}'|awk -F"-" ' { print $1}'`
+			DRIVE_SIZE=`lsblk --output SIZE -n -d /dev/$DRIVE`
+                        echo "Drive /dev/$DRIVE is removable" $ID_MODEL $DRIVE_SIZE # $ID_SERIAL $PARTPROBE_EXIT_CODE
+		fi
+        fi
+done
+
+echo
+
+exit 0
+
