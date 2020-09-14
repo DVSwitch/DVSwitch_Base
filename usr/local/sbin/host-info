@@ -254,7 +254,7 @@ echo ""
         echo2 "CPU Load =" "$CPU_LOAD"
 	echo2 "Temperature =" "$TEMPERATURE"
         echo2 "FTDI Latency Timer =" "$serial_latency"
-	echo2 "IP Addresses =" "Internal: $INTERNAL  External: $EXTERNAL"
+	echo2 "IP Addresses =" "Internal: $INTERNAL" # External: $EXTERNAL"
 	echo
 
 # fi
