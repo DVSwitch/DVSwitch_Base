@@ -1,0 +1,59 @@
+#!/bin/bash
+# set -o errexit
+
+#####################################################
+SCRIPT_VERSION="Log DVSwitch info at boot v.1.6.0"  #
+SCRIPT_AUTHOR="N4IRS"                               #
+SCRIPT_DATE="10/27/2020"                            #
+#####################################################
+
+if [ "$1" != "" ]; then
+    case $1 in
+        -v|-V|--version) echo $SCRIPT_VERSION; exit 0 ;;
+        -a|-A|--author)  echo $SCRIPT_AUTHOR;  exit 0 ;;
+        -d|-D|--date)    echo $SCRIPT_DATE;    exit 0 ;;
+                   *)    echo "Unknown parameter used: $1"; exit 1 ;;
+    esac
+fi
+
+echo
+echo $SCRIPT_VERSION $SCRIPT_DATE
+echo
+
+# Do any needed preflight
+
+# Has the user asked for a password reset?
+[ -x "/usr/local/sbin/passwd-reset" ] && passwd-reset
+
+# Reset the GPIO based vocoder
+[ -x "/usr/local/sbin/gpio-reset" ] && gpio-reset
+
+# Check for stale data files
+find /var/lib/dvswitch/subscriber_ids.csv -mtime 1 -exec /usr/local/sbin/DVSM_Update.sh \;
+
+
+# Collect and log status info at boot.
+echo "" > /var/log/dvswitch/boot.log
+
+echo "Host information:" >> /var/log/dvswitch/boot.log
+[ -x "/usr/local/sbin/host-info" ] && /usr/local/sbin/host-info >>/var/log/dvswitch/boot.log
+echo "" >> /var/log/dvswitch/boot.log
+
+echo "DVSwitch program versions:" >> /var/log/dvswitch/boot.log
+[ -x "/opt/MMDVM_Bridge/dvswitch.sh" ] && /opt/MMDVM_Bridge/dvswitch.sh version all >> /var/log/dvswitch/boot.log
+echo "" >> /var/log/dvswitch/boot.log
+
+echo "UDP port listeners for DVSwitch programs:" >> /var/log/dvswitch/boot.log
+[ -x "/opt/MMDVM_Bridge/dvswitch.sh" ] && /opt/MMDVM_Bridge/dvswitch.sh getUDPPortsForProcess all >> /var/log/dvswitch/boot.log
+echo "" >> /var/log/dvswitch/boot.log
+
+echo "DVSwitch Modes:" >> /var/log/dvswitch/boot.log
+[ -x "/opt/MMDVM_Bridge/dvswitch.sh" ] && /opt/MMDVM_Bridge/dvswitch.sh getEnabledModes >> /var/log/dvswitch/boot.log
+echo "" >> /var/log/dvswitch/boot.log
+
+echo "Analog_Bridge information:" >> /var/log/dvswitch/boot.log
+[ -x "/opt/MMDVM_Bridge/dvswitch.sh" ] && /opt/MMDVM_Bridge/dvswitch.sh show >> /var/log/dvswitch/boot.log
+echo "" >> /var/log/dvswitch/boot.log
+
+exit 0
+

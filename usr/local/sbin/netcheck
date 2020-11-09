@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Version 1.6.0
+
 # Initialize number of attempts
 reachable=9
 echo >>/var/log/netcheck

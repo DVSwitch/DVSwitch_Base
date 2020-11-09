@@ -1,0 +1,17 @@
+#! /bin/sh
+
+set -e
+
+systemctl enable systemd-networkd-wait-online.service
+
+systemctl enable netcheck.service
+
+FILE="/etc/rc.local"
+        if [ -f "$FILE" ] ; then
+                if [ -z "$(grep DVSwitch-startup $FILE)" ]; then
+                        sed -i '$i'"$(echo '/usr/local/sbin/DVSwitch-startup')" /etc/rc.local
+                fi
+                exit 0
+        fi
+
+exit 0

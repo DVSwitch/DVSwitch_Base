@@ -1,7 +1,7 @@
 #!/bin/bash
 set -o errexit
 
-# N4IRS 09/11/2020
+# N4IRS 10/14/2020
 
 ################################################
 #                                              #
@@ -27,15 +27,14 @@ set -o errexit
 # Need to verify programs used are installed
 # bc
 
-##################################################
-SCRIPT_VERSION="Host information script v.1.0.1" #
-SCRIPT_AUTHOR="N4IRS"                            #
-SCRIPT_DATE="09/11/2020"                         #
-##################################################
+###################################################
+SCRIPT_VERSION="Host information script v .1.6.0" #
+SCRIPT_AUTHOR="N4IRS"                             #
+SCRIPT_DATE="10/27/2020"                          #
+###################################################
 
 echo
 echo $SCRIPT_VERSION $SCRIPT_DATE
-echo
 
 if [ "$1" != "" ]; then
     case $1 in
@@ -49,38 +48,51 @@ fi
 function get_pi_version() {
   declare -r REVCODE=$(awk '/Revision/ {print $3}' /proc/cpuinfo)
   declare -rA REVISIONS=(
-    [0002]="Model B Rev 1, 256 MB RAM"
-    [0003]="Model B Rev 1 ECN0001, 256 MB RAM"
-    [0004]="Model B Rev 2, 256 MB RAM"
-    [0005]="Model B Rev 2, 256 MB RAM"
-    [0006]="Model B Rev 2, 256 MB RAM"
-    [0007]="Model A, 256 MB RAM"
-    [0008]="Model A, 256 MB RAM"
-    [0009]="Model A, 256 MB RAM"
-    [000d]="Model B Rev 2, 512 MB RAM"
-    [000e]="Model B Rev 2, 512 MB RAM"
-    [000f]="Model B Rev 2, 512 MB RAM"
-    [0010]="Model B+, 512 MB RAM"
-    [0011]="Compute Module (512MB)"
-    [0013]="Model B+, 512 MB RAM"
-    [900032]="Model B+, 512 MB RAM"
-    [0011]="Compute Module, 512 MB RAM"
-    [0014]="Compute Module, 512 MB RAM"
-    [0012]="Model A+, 256 MB RAM"
-    [0015]="Model A+, 256 MB or 512 MB RAM"
-    [a01041]="2 Model B v1.1, 1 GB RAM"
-    [a21041]="2 Model B v1.1, 1 GB RAM"
-    [a22042]="2 Model B v1.2, 1 GB RAM"
-    [90092]="Zero v1.2, 512 MB RAM"
-    [90093]="Zero v1.3, 512 MB RAM"
-    [0x9000C1]="Zero W, 512 MB RAM"
-    [a02082]="3 Model B, 1 GB RAM"
-    [a22082]="3 Model B, 1 GB RAM"
-    [a22083]="3 Model B, 1 GB"
-    [a32082]="3 Model B, 1 GB"
-    [a52082]="3 Model B, 1 GB"
-    [a020d3]="3 Model B Plus Rev 1.3, 1 GB RAM"
-    [c03111]="4 Model B Rev 1.1, 4 GB RAM"
+        [0002]="Model B Rev 1.0 (256 MB RAM)"
+        [0003]="Model B Rev 1.0 + ECN0001 (256 MB RAM)"
+        [0004]="Model B Rev 2.0 (256 MB RAM)"
+        [0005]="Model B Rev 2.0 (256 MB RAM)"
+        [0006]="Model B Rev 2.0 (256 MB RAM)"
+        [0007]="Model A Mounting holes (256 MB RAM)"
+        [0008]="Model A Mounting holes (256 MB RAM)"
+        [0009]="Model A Mounting holes (256 MB RAM)"
+        [000d]="Model B Rev 2.0 (512 MB RAM)"
+        [000e]="Model B Rev 2.0 (512 MB RAM)"
+        [000f]="Model B Rev 2.0 (512 MB RAM)"
+        [0010]="Model B+ Rev 1.0 (512 MB RAM)"
+        [0011]="Compute Module 1 Rev 1.0 (512 MB RAM)"
+        [0012]="Model A+ Rev 1.1 (256 MB RAM)"
+        [0013]="Model B+ Rev 1.2 (512 MB RAM)"
+        [0014]="Compute Module 1 Rev 1.0 (512 MB RAM)"
+        [0015]="Model A+ Rev 1.1 256 MB or 512 MB RAM"
+        [900021]="Model A+ Rev 1.1 (512 MB RAM)"
+        [900032]="Model B+ Rev 1.2 (512 MB RAM)"
+        [900092]="Zero Rev 1.2 (512 MB RAM)"
+        [900093]="Zero Rev 1.3 (512 MB RAM)"
+        [9000c1]="Zero W Rev 1.1 (512 MB RAM)"
+        [9020e0]="3 Model A+ (512 MB RAM)"
+        [920092]="Zero Rev 1.2 (512 MB RAM)"
+        [920093]="Zero Rev 1.3 (512 MB RAM)"
+        [900061]="Compute Module 1 Rev 1.1"
+        [a01040]="2 Model B (1 GB RAM)"
+        [a01041]="2 Model B (1 GB RAM)"
+        [a02082]="3 Model B (1 GB RAM)"
+        [a020a0]="Compute Module 3 Rev 1.0 (1 GB RAM)"
+        [a020d3]="3 Model B+ (1 GB RAM)"
+        [a21041]="2 Model B (1 GB RAM)"
+        [a22042]="2 Model B (1 GB RAM)"
+        [a22082]="3 Model B (1 GB RAM)"
+        [a220a0]="Compute Module 3 Rev 1.0 (1 GB RAM)"
+        [a32082]="3 Model B (1 GB RAM)"
+        [a52082]="3 Model B (1 GB RAM)"
+        [a22083]="3 Model B (1 GB RAM)"
+        [a02100]="Compute Module 3+ Rev 1.0 (1 GB RAM)"
+        [a03111]="4 Model B (1 GB RAM)"
+        [b03111]="4 Model B (2 GB RAM)"
+        [c03111]="4 Model B (4 GB RAM)"
+        [b03112]="4 Model B Rev 1.2 (2 GB RAM)"
+        [c03112]="4 Model B Rev 1.2 (4 GB RAM)"
+        [d03114]="4 Model B Rev 1.4 (8 GB RAM)"
   )
 RPI_REVCODE=${REVCODE}
 RPI_REVISION=${REVISIONS[${REVCODE}]}
@@ -122,9 +134,9 @@ fi
 
 # Process Device Tree results if available
 if [[ -d "/proc/device-tree" && ! -L " /proc/device-tree" ]] ; then
-        DEVTREE_MODEL=$(awk '{print $1} {print $2}' /proc/device-tree/model)
-        DEVTREE_COMPATABLE=$(awk '{print $1} {print $2}' /proc/device-tree/compatible)
-	DEVTREE_SERIAL=$(awk '{print $1} {print $2}' /proc/device-tree/serial-number)
+        [ -f "/proc/device-tree/model" ] && DEVTREE_MODEL=$(tr -d '\0' </proc/device-tree/model)
+        [ -f "/proc/device-tree/compatible" ] && DEVTREE_COMPATABLE=$(tr -d '\0' </proc/device-tree/compatible)
+        [ -f "/proc/device-tree/serial" ] && DEVTREE_SERIAL=$(tr -d '\0' </proc/device-tree/serial)
 fi
 
 # Process /proc/cpuinfo results
@@ -137,8 +149,8 @@ get_cpuinfo_prop "Serial" ; CPUINFO_SERIAL=$cpuinfo_prop
 cache_uname
 
 # Process current stats
-FREE_MEM=$(free -m | awk 'NR==2{printf "%s MB of %s MB (%.2f%%)\n", $3,$2,$3*100/$2 }')
-DISK_USED=$(df -h | awk '$NF=="/"{printf "%d GB of %d GB (%s)\n", $3,$2,$5}')
+FREE_MEM=$(free -m | awk 'NR==2{printf "%s MB used of %s MB (%.2f%%)\n", $3,$2,$3*100/$2 }')
+DISK_USED=$(df -h | awk '$NF=="/"{printf "%d GB used of %d GB (%s)\n", $3,$2,$5}')
 CPU_LOAD=$(top -bn1 | grep load | awk '{printf "%.2f\n", $(NF-2)}')
 
 if [ -f /sys/class/thermal/thermal_zone0/temp ] ; then
@@ -158,6 +170,18 @@ if command_exists getconf ; then
 fi
 
 HOSTNAME=$(hostname)
+
+# FTDI Latency Timer Note: This needs work
+filename="/sys/bus/usb-serial/devices/ttyUSB0/latency_timer"
+if [ -a "$filename" ]
+then
+        serial_latency=$(cat $filename)
+fi
+
+# Get internal / external IP
+INTERNAL=`ip a | grep glo | awk '{print $2}' | head -1 | cut -f1 -d/`
+EXTERNAL=`wget -q -T5 -O - http://icanhazip.com/ | tail`
+MAC=`cat /sys/class/net/$(ip route show default | awk '/default/ {print $5}')/address`
 
 # Determine type of system
 
@@ -190,17 +214,6 @@ then
         system_type=Intel-AMD
 fi
 
-# FTDI Latency Timer Note: This needs work
-filename="/sys/bus/usb-serial/devices/ttyUSB0/latency_timer"
-if [ -a "$filename" ]
-then
-        serial_latency=$(cat $filename)
-fi
-
-# Get internal / external IP
-INTERNAL=`ip a | grep glo | awk '{print $2}' | head -1 | cut -f1 -d/`
-EXTERNAL=`wget -q -O - http://icanhazip.com/ | tail`
-
 # system_type=unknown
 echo ""
 
@@ -211,31 +224,31 @@ echo ""
         echo "=== $system_type ==="
 	echo2 "Raspberry Pi" "$RPI_REVISION" "($RPI_REVCODE)"
 
-        echo2 "Device Tree Model =" "$DEVTREE_MODEL"
-        echo2 "Device Tree Compatable =" "$DEVTREE_COMPATABLE"
-        echo2 "Device Tree Serial number =" "$DEVTREE_SERIAL"
+        echo2 "Device Tree model =" "$DEVTREE_MODEL"
+        echo2 "Device Tree compatable =" "$DEVTREE_COMPATABLE"
+        echo2 "Device Tree serial number =" "$DEVTREE_SERIAL"
         echo2 "Node name =" "$uname_nodename"
         echo2 "Host name =" "$HOSTNAME"
         echo2 "Machine =" "$uname_machine"
         # echo ""
-        echo2 "CPU Model =" "$CPUINFO_MODEL"
-        echo2 "CPU Hardware =" "$CPUINFO_HARDWARE"
-        echo2 "CPU Revision =" "$CPUINFO_REVISION"
-        echo2 "CPU Serial =" "$CPUINFO_SERIAL"
+        echo2 "CPU model =" "$CPUINFO_MODEL"
+        echo2 "CPU hardware =" "$CPUINFO_HARDWARE"
+        echo2 "CPU revision =" "$CPUINFO_REVISION"
+        echo2 "CPU serial =" "$CPUINFO_SERIAL"
 	# echo ""
-        echo2 "BOARD =" "$BOARD"
-        echo2 "BOARD_NAME =" "$BOARD_NAME"
-        echo2 "BOARDFAMILY =" "$BOARDFAMILY"
-        echo2 "VERSION =" "$VERSION"
-        echo2 "LINUXFAMILY =" "$LINUXFAMILY"
-        echo2 "BRANCH =" "$BRANCH"
+        echo2 "Board =" "$BOARD"
+        echo2 "Board name =" "$BOARD_NAME"
+        echo2 "Board family =" "$BOARDFAMILY"
+        echo2 "Version =" "$VERSION"
+        echo2 "Linux family =" "$LINUXFAMILY"
+        echo2 "Branch =" "$BRANCH"
         echo2 "ARCH =" "$ARCH"
 	# echo ""
         echo2 "format =" "$format"
         echo2 "bootloader_location =" "$bootloader_location"
         echo2 "boot_fstype =" "$boot_fstype"
-        echo2 "serial_tty =" "$serial_tty"
-        echo2 "usbnet_mem =" "$usbnet_mem"
+        echo2 "serial tty =" "$serial_tty"
+        echo2 "usbnet mem =" "$usbnet_mem"
 	# echo ""
         echo2 "Operating system =" "$uname_operating_system"
         echo2 "ID =" "$lsb_id"
@@ -244,18 +257,18 @@ echo ""
 	echo2 "Debian package architecture =" "$ARCHITECURE"
 	echo2 "Image date =" "$IMG_DATE"
         # echo ""
-        echo2 "Kernel-name =" "$uname_kernel_name"
-        echo2 "Kernel-release =" "$uname_kernel_release"
-        echo2 "Kernel-version =" "$uname_kernel_version"
+        echo2 "Kernel name =" "$uname_kernel_name"
+        echo2 "Kernel release =" "$uname_kernel_release"
+        echo2 "Kernel version =" "$uname_kernel_version"
 	echo2 "Data width (bits) =" "$getconf_long_bit"
         # echo ""
-        echo2 "Free Memory =" "$FREE_MEM"
-        echo2 "Disk Used =" "$DISK_USED"
-        echo2 "CPU Load =" "$CPU_LOAD"
+        echo2 "Memory =" "$FREE_MEM"
+        echo2 "Disk =" "$DISK_USED"
+        echo2 "CPU load =" "$CPU_LOAD"
 	echo2 "Temperature =" "$TEMPERATURE"
-        echo2 "FTDI Latency Timer =" "$serial_latency"
-	echo2 "IP Addresses =" "Internal: $INTERNAL" # External: $EXTERNAL"
-	echo
+        echo2 "FTDI latency timer =" "$serial_latency"
+	echo2 "IP Address =" "Internal: $INTERNAL  MAC Address: $MAC"
+	# echo
 
 # fi
 
