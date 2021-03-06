@@ -10,6 +10,7 @@ Wants=network-online.target
 Type=notify
 StandardOutput=null
 ExecStartPre = /bin/sh -c 'echo "Starting NetCheck in systemd: [`date +%%T.%%3N`]" >> /var/log/netcheck'
+ExecStartPre = /bin/sh -c '[ ! -d "/path/to/dir" ] && mkdir -p /var/log/dvswitch'
 ExecStart=/usr/local/sbin/netcheck
 
 [Install]
