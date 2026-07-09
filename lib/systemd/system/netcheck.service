@@ -1,0 +1,19 @@
+[Unit]
+Description=NetCheck test for Internet connectivity
+# Description=Place this file in /lib/systemd/system
+# Description=N4IRS 07/01/2024
+
+After=syslog.target
+# Wants=network-online.target
+
+[Service]
+Type=notify
+StandardOutput=null
+ExecStartPre = /usr/bin/sh -c 'echo "Starting NetCheck in systemd: [`date +%%T.%%3N`]" >> /var/log/netcheck'
+ExecStart=/usr/local/sbin/netcheck
+
+[Install]
+# To make the network-online.target available
+# systemctl enable systemd-networkd-wait-online.service
+
+WantedBy=multi-user.target

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+/usr/bin/find /var/log/mmdvm -mtime +7 -name "*.log" -print -delete
+/usr/bin/find /var/log/dvswitch -mtime +7 -name "*.log" -print -delete
+/usr/bin/find /var/log/ircddbgateway -mtime +7 -name "*.log" -print -delete

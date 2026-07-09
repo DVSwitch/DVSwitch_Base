@@ -1,0 +1,3 @@
+# Make sure we have fresh data file at boot
+@reboot root /usr/local/sbin/DVSwitch-startup
+
